@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>乐桥 - AI智能陪练</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+        }
+        .header {
+            background-color: #165DFF;
+            color: white;
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(22, 93, 255, 0.15);
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 24px;
+            font-weight: 700;
+        }
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background-color: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #165DFF;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #e8f0ff;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #165DFF;
+            font-weight: 600;
+        }
+        .container {
+            max-width: 1440px;
+            margin: 24px auto;
+            padding: 0 24px;
+        }
+        .page-title {
+            font-size: 28px;
+            font-weight: 600;
+            color: #165DFF;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .title-tag {
+            font-size: 14px;
+            background-color: #e8f0ff;
+            color: #165DFF;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: normal;
+        }
+        .content-wrapper {
+            display: grid;
+            grid-template-columns: 3fr 1fr;
+            gap: 24px;
+        }
+        .practice-area {
+            background-color: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+        }
+        .practice-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        .practice-info {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .practice-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+        }
+        .practice-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 14px;
+            color: #666;
+        }
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .instrument-select {
+            padding: 8px 16px;
+            border: 1px solid #e8f0ff;
+            border-radius: 8px;
+            background-color: white;
+            color: #165DFF;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .score-display {
+            background-color: #fafafa;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 24px;
+            height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            border: 1px solid #e8f0ff;
+            /* 确保是正方形（宽高都是500px，padding不影响宽高） */
+        }
+        .score-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        .play-controls {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+        .control-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+        .btn-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background-color: #165DFF;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            transition: all 0.3s;
+        }
+        .btn-icon:hover {
+            background-color: #0F4CD0;
+            transform: scale(1.05);
+        }
+        .btn-text {
+            font-size: 14px;
+            color: #333;
+        }
+        .evaluation-area {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid #e8f0ff;
+        }
+        .evaluation-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #165DFF;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        .metric-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+        }
+        .metric-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #165DFF;
+            margin-bottom: 4px;
+        }
+        .metric-name {
+            font-size: 14px;
+            color: #666;
+        }
+        .feedback-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .feedback-item {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            padding: 12px;
+            background-color: white;
+            border-radius: 8px;
+            border-left: 3px solid #165DFF;
+        }
+        .feedback-icon {
+            color: #165DFF;
+            font-size: 18px;
+            margin-top: 2px;
+        }
+        .feedback-content {
+            flex: 1;
+        }
+        .feedback-text {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #333;
+        }
+        .feedback-time {
+            font-size: 12px;
+            color: #999;
+            margin-top: 4px;
+        }
+        .side-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+        .panel-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+        }
+        .panel-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #165DFF;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .repertoire-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .repertoire-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #f0f0f0;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .repertoire-item:hover {
+            background-color: #f5f7fa;
+            border-color: #e8f0ff;
+        }
+        .repertoire-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .repertoire-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+        }
+        .repertoire-level {
+            font-size: 12px;
+            color: #666;
+            background-color: #f0f0f0;
+            width: fit-content;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+        .repertoire-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+       .difficulty {
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    white-space: nowrap; /* 强制文字不换行 */
+    min-width: 40px; /* 保证标签有足够宽度显示文字 */
+}
+        .difficulty-easy {
+            color: #00C48C;
+            background-color: #e6f7f3;
+        }
+        .difficulty-medium {
+            color: #FFA500;
+            background-color: #fff4e5;
+        }
+        .difficulty-hard {
+            color: #FF4D4F;
+            background-color: #ffe6e6;
+        }
+        .play-count {
+            font-size: 12px;
+            color: #999;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .progress-card {
+            margin-top: 24px;
+        }
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .progress-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        .stat-item {
+            background-color: #f5f7fa;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #165DFF;
+            margin-bottom: 4px;
+        }
+        .stat-name {
+            font-size: 14px;
+            color: #666;
+        }
+        /* 修复进度条遮挡核心样式 */
+        .progress-chart {
+            width: 100%;
+            height: 220px; /* 大幅增加高度，确保足够空间 */
+            background-color: #f5f7fa;
+            border-radius: 8px;
+            padding: 30px 16px 40px; /* 顶部留30px给数值，底部留40px给日期 */
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+            overflow: visible; /* 允许标签超出容器（因为padding已留空间） */
+            position: relative;
+        }
+        .chart-bar {
+            flex: 1;
+            background-color: #165DFF;
+            border-radius: 4px 4px 0 0;
+            position: relative;
+            transition: height 0.5s ease;
+        }
+        .chart-label {
+            position: absolute;
+            bottom: -30px; /* 向下调整，确保显示在底部padding区域 */
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            color: #666;
+            white-space: nowrap;
+        }
+        .chart-value {
+            position: absolute;
+            top: -25px; /* 向上调整，确保显示在顶部padding区域 */
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            color: #165DFF;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <!-- 头部导航 -->
+    <div class="header">
+        <div class="logo">
+            <div class="logo-icon">
+                <img src="images/m5.png" alt="音乐logo" width="40" height="40">
+            </div>
+            乐桥
+        </div>
+        <div class="user-info">
+            <span>我的AI陪练</span>
+            <div class="user-avatar">学</div>
+        </div>
+    </div>
+
+    <!-- 主体内容 -->
+    <div class="container">
+        <h1 class="page-title">
+            AI智能陪练
+            <span class="title-tag">会员专享 · 实时评估 · 趣味练习</span>
+        </h1>
+
+        <div class="content-wrapper">
+            <!-- 练习区域 -->
+            <div class="practice-area">
+                <div class="practice-header">
+                    <div class="practice-info">
+                        <h2 class="practice-title">《小星星》钢琴练习 - 初级版</h2>
+                        <div class="practice-meta">
+                            <div class="meta-item">
+                                <i style="color: #165DFF;">📊</i>
+                                上次得分：85分
+                            </div>
+                            <div class="meta-item">
+                                <i style="color: #165DFF;">⏱️</i>
+                                平均练习时长：12分钟
+                            </div>
+                            <div class="meta-item">
+                                <i style="color: #165DFF;">🔄</i>
+                                练习次数：18次
+                            </div>
+                        </div>
+                    </div>
+                    <select class="instrument-select">
+                        <option>🎹 钢琴</option>
+                        <option>🎸 吉他</option>
+                        <option>🎻 小提琴</option>
+                        <option>🎤 声乐</option>
+                    </select>
+                </div>
+
+                <!-- 乐谱展示区 -->
+                <div class="score-display">
+                    <img src="images/m7.png" alt="小星星乐谱" class="score-img" width="400" height="400">
+                </div>
+
+                <!-- 控制按钮区 -->
+                <div class="play-controls">
+                    <div class="control-btn">
+                        <div class="btn-icon">▶️</div>
+                        <div class="btn-text">开始练习</div>
+                    </div>
+                    <div class="control-btn">
+                        <div class="btn-icon">🎧</div>
+                        <div class="btn-text">听示范</div>
+                    </div>
+                    <div class="control-btn">
+                        <div class="btn-icon">📌</div>
+                        <div class="btn-text">重点标记</div>
+                    </div>
+                    <div class="control-btn">
+                        <div class="btn-icon">⏱️</div>
+                        <div class="btn-text">节拍器</div>
+                    </div>
+                    <div class="control-btn">
+                        <div class="btn-icon">💾</div>
+                        <div class="btn-text">保存进度</div>
+                    </div>
+                </div>
+
+                <!-- 评估反馈区 -->
+                <div class="evaluation-area">
+                    <h3 class="evaluation-title">
+                        <i>📝</i>
+                        实时评估反馈
+                    </h3>
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-value">92</div>
+                            <div class="metric-name">音准精度</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value">88</div>
+                            <div class="metric-name">节奏稳定性</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value">95</div>
+                            <div class="metric-name">流畅度</div>
+                        </div>
+                    </div>
+                    <div class="feedback-list">
+                        <div class="feedback-item">
+                            <div class="feedback-icon">✅</div>
+                            <div class="feedback-content">
+                                <div class="feedback-text">第8小节音准完美，指法流畅！</div>
+                                <div class="feedback-time">00:45</div>
+                            </div>
+                        </div>
+                        <div class="feedback-item">
+                            <div class="feedback-icon">⚠️</div>
+                            <div class="feedback-content">
+                                <div class="feedback-text">第12小节节奏稍快，建议放慢速度练习</div>
+                                <div class="feedback-time">01:12</div>
+                            </div>
+                        </div>
+                        <div class="feedback-item">
+                            <div class="feedback-icon">💡</div>
+                            <div class="feedback-content">
+                                <div class="feedback-text">左手伴奏力度均匀，继续保持！</div>
+                                <div class="feedback-time">01:38</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 侧边面板 -->
+            <div class="side-panel">
+                <!-- 练习曲库 -->
+                <div class="panel-card">
+                    <h3 class="panel-title">
+                        <i>📚</i>
+                        推荐练习曲目
+                    </h3>
+                    <div class="repertoire-list">
+                        <div class="repertoire-item">
+                            <div class="repertoire-info">
+                                <div class="repertoire-name">《欢乐颂》- 贝多芬</div>
+                                <div class="repertoire-level">入门</div>
+                            </div>
+                            <div class="repertoire-meta">
+                                <span class="difficulty difficulty-easy">简单</span>
+                                <span class="play-count"><i>▶️</i> 2.3万次</span>
+                            </div>
+                        </div>
+                        <div class="repertoire-item">
+                            <div class="repertoire-info">
+                                <div class="repertoire-name">《两只老虎》- 儿童歌曲</div>
+                                <div class="repertoire-level">初级</div>
+                            </div>
+                            <div class="repertoire-meta">
+                                <span class="difficulty difficulty-easy">简单</span>
+                                <span class="play-count"><i>▶️</i> 3.7万次</span>
+                            </div>
+                        </div>
+                        <div class="repertoire-item">
+                            <div class="repertoire-info">
+                                <div class="repertoire-name">《梦中的婚礼》- 理查德·克莱德曼</div>
+                                <div class="repertoire-level">中级</div>
+                            </div>
+                            <div class="repertoire-meta">
+                                <span class="difficulty difficulty-medium">中等</span>
+                                <span class="play-count"><i>▶️</i> 1.8万次</span>
+                            </div>
+                        </div>
+                        <div class="repertoire-item">
+                            <div class="repertoire-info">
+                                <div class="repertoire-name">《致爱丽丝》- 贝多芬</div>
+                                <div class="repertoire-level">中级</div>
+                            </div>
+                            <div class="repertoire-meta">
+                                <span class="difficulty difficulty-medium">中等</span>
+                                <span class="play-count"><i>▶️</i> 2.1万次</span>
+                            </div>
+                        </div>
+                        <div class="repertoire-item">
+                            <div class="repertoire-info">
+                                <div class="repertoire-name">《月光奏鸣曲》第一乐章 - 贝多芬</div>
+                                <div class="repertoire-level">高级</div>
+                            </div>
+                            <div class="repertoire-meta">
+                                <span class="difficulty difficulty-hard">困难</span>
+                                <span class="play-count"><i>▶️</i> 9800次</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 练习进度 -->
+                <div class="panel-card progress-card">
+                    <div class="progress-header">
+                        <h3 class="panel-title">
+                            <i>📈</i>
+                            本周练习进度
+                        </h3>
+                    </div>
+                    <div class="progress-stats">
+                        <div class="stat-item">
+                            <div class="stat-value">6.5</div>
+                            <div class="stat-name">练习时长(小时)</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">8</div>
+                            <div class="stat-name">练习曲目数</div>
+                        </div>
+                    </div>
+                    <div class="progress-chart">
+                        <div class="chart-bar" style="height: 60%;">
+                            <div class="chart-value">45</div>
+                            <div class="chart-label">周一</div>
+                        </div>
+                        <div class="chart-bar" style="height: 80%;">
+                            <div class="chart-value">60</div>
+                            <div class="chart-label">周二</div>
+                        </div>
+                        <div class="chart-bar" style="height: 40%;">
+                            <div class="chart-value">30</div>
+                            <div class="chart-label">周三</div>
+                        </div>
+                        <div class="chart-bar" style="height: 90%;">
+                            <div class="chart-value">90</div>
+                            <div class="chart-label">周四</div>
+                        </div>
+                        <div class="chart-bar" style="height: 70%;">
+                            <div class="chart-value">75</div>
+                            <div class="chart-label">周五</div>
+                        </div>
+                        <div class="chart-bar" style="height: 100%;">
+                            <div class="chart-value">120</div>
+                            <div class="chart-label">周六</div>
+                        </div>
+                        <div class="chart-bar" style="height: 50%;">
+                            <div class="chart-value">40</div>
+                            <div class="chart-label">周日</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
