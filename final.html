@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>乐桥 - 连接优质音乐教师与学生的智能枢纽</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind 配置 -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#165DFF',
+            secondary: '#FF7D00',
+            dark: '#1D2939',
+            light: '#F9FAFB',
+            gray: {
+              100: '#F3F4F6',
+              200: '#E5E7EB',
+              300: '#D1D5DB',
+              400: '#9CA3AF',
+              500: '#6B7280',
+              600: '#4B5563',
+              700: '#374151',
+              800: '#1F2937',
+              900: '#111827',
+            }
+          },
+          fontFamily: {
+            inter: ['Inter', 'sans-serif'],
+          },
+          boxShadow: {
+            'soft': '0 4px 20px rgba(0, 0, 0, 0.05)',
+            'medium': '0 8px 30px rgba(0, 0, 0, 0.1)',
+            'hard': '0 12px 40px rgba(0, 0, 0, 0.15)',
+          }
+        },
+      }
+    }
+  </script>
+  
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .content-auto {
+        content-visibility: auto;
+      }
+      .text-shadow {
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .bg-gradient-primary {
+        background: linear-gradient(135deg, #165DFF 0%, #0F4CD0 100%);
+      }
+      .bg-gradient-secondary {
+        background: linear-gradient(135deg, #FF7D00 0%, #E66F00 100%);
+      }
+      .card-hover {
+        transition: all 0.3s ease;
+      }
+      .card-hover:hover {
+        transform: translateY(-5px);
+      }
+      .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+      }
+      .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+    }
+  </style>
+</head>
+<body class="font-inter bg-light text-gray-800 antialiased">
+ <!-- 导航栏（最终版） -->
+<header id="navbar" class="fixed w-full top-0 z-50 transition-all duration-300 bg-white/90 backdrop-blur-sm shadow-soft">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center h-16 md:h-20">
+      <!-- Logo -->
+      <a href="#" class="flex items-center space-x-2">
+        <img src="https://grower2006.github.io/lsc/images/cebc31c73db876cc664f3d6ff0a78f37.png" alt="音乐logo" width="35" height="35">
+        <span class="text-xl font-bold text-dark">乐桥</span>
+      </a>
+      
+      <!-- 桌面导航（整合搜索栏到AI陪练右侧） -->
+      <nav class="hidden md:flex items-center space-x-8">
+        <a href="https://grower2006.github.io/lsc/student.html" class="text-gray-600 hover:text-primary transition-colors font-medium">学生注册</a>
+        <a href="https://grower2006.github.io/lsc/teacher.html" class="text-gray-600 hover:text-primary transition-colors font-medium">教师入驻</a>
+        <a href="https://grower2006.github.io/lsc/Red-List-Promotion.html" class="text-gray-600 hover:text-primary transition-colors font-medium">红榜推流</a>
+        <a href="https://grower2006.github.io/lsc/classinterface.html" class="text-gray-600 hover:text-primary transition-colors font-medium">上课界面</a>
+        <a href="https://grower2006.github.io/lsc/AI-Practice-Partner.html" class="text-gray-600 hover:text-primary transition-colors font-medium">AI陪练</a>
+        
+        <!-- 搜索栏移到AI陪练右侧（保留原有样式） -->
+        <div class="ml-4 flex-1 max-w-md">
+          <div class="relative w-full">
+            <input 
+              type="text" 
+              placeholder="搜索课程/老师/乐器" 
+              class="w-full px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
+            >
+            <button class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary transition-colors">
+              <i class="fa fa-search"></i>
+            </button>
+          </div>
+        </div>
+      </nav>
+      
+      <!-- 进入平台 + 黑金开通会员（放最右侧，样式不变） -->
+      <div class="hidden md:flex items-center space-x-4">
+   <!-- 调大版 + 跳转链接 -->
+<a href="https://grower2006.github.io/lsc/final1(2).html" class="px-8 py-4 text-center text-white bg-primary rounded-lg font-medium text-lg hover:bg-primary/90 transition-all hover:scale-105 duration-300 shadow-md hover:shadow-lg">
+    进入平台
+</a>
+        <!-- 黑金质感开通会员 -->
+        <a href="#" class="ml-2 px-5 py-2 bg-black text-white rounded-full font-semibold relative overflow-hidden group">
+          <!-- 金色边框+纹理 -->
+          <span class="absolute inset-0 rounded-full border-2 border-yellow-400 opacity-80"></span>
+          <span class="relative z-10 flex items-center gap-2">
+            <i class="fa fa-diamond text-yellow-400"></i>
+            开通会员
+          </span>
+          <!-- hover动效 -->
+          <span class="absolute inset-0 bg-yellow-400/20 translate-x-full group-hover:translate-x-0 transition-transform duration-300"></span>
+        </a>
+      </div>
+      
+      <!-- 移动端菜单按钮 -->
+      <button id="menuBtn" class="md:hidden text-gray-600 focus:outline-none">
+      <i class="fa fa-bars text-2xl"></i>
+      </button>
+    </div>
+  </div>
+  
+  <!-- 移动端导航菜单（保持原有内容不变） -->
+  <div id="mobileMenu" class="md:hidden hidden bg-white border-t border-gray-100 shadow-soft">
+    <div class="container mx-auto px-4 py-3 space-y-3">
+      <!-- 移动端搜索栏 -->
+      <div class="relative w-full mb-3">
+        <input 
+          type="text" 
+          placeholder="搜索课程/老师/乐器" 
+          class="w-full px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
+        >
+        <button class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
+          <i class="fa fa-search"></i>
+        </button>
+      </div>
+      
+      <a href="https://grower2006.github.io/lsc/student.html" class="block py-2 text-gray-600 hover:text-primary transition-colors font-medium">学生注册</a>
+      <a href="https://grower2006.github.io/lsc/teacher.html" class="block py-2 text-gray-600 hover:text-primary transition-colors font-medium">教师入驻</a>
+      <a href="https://grower2006.github.io/lsc/Red-List-Promotion.html" class="block py-2 text-gray-600 hover:text-primary transition-colors font-medium">红榜推流</a>
+      <a href="https://grower2006.github.io/lsc/classinterface.html" class="block py-2 text-gray-600 hover:text-primary transition-colors font-medium">上课界面</a>
+      <a href="https://grower2006.github.io/lsc/AI-Practice-Partner.html" class="block py-2 text-gray-600 hover:text-primary transition-colors font-medium">AI陪练</a>
+      
+      <!-- 移动端黑金开通会员 -->
+      <a href="#" class="block py-3 text-center bg-black text-white rounded-full font-semibold relative overflow-hidden group">
+        <span class="absolute inset-0 rounded-full border-2 border-yellow-400 opacity-80"></span>
+        <span class="relative z-10 flex items-center justify-center gap-2">
+          <i class="fa fa-diamond text-yellow-400"></i>
+          开通会员
+        </span>
+        <span class="absolute inset-0 bg-yellow-400/20 translate-x-full group-hover:translate-x-0 transition-transform duration-300"></span>
+      </a>
+      
+      <div class="flex space-x-4 pt-2 border-t border-gray-100">
+        <a href="#" class="flex-1 px-4 py-2 text-center text-primary font-medium border border-primary rounded-lg hover:bg-primary/5 transition-colors">登录</a>
+        <a href="#" class="flex-1 px-4 py-2 text-center bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors">注册</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+  <main>
+    <!-- 英雄区域 -->
+    <section class="pt-24 md:pt-32 pb-16 md:pb-24 bg-gradient-to-b from-white to-gray-50">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col lg:flex-row items-center">
+          <div class="w-full lg:w-1/2 mb-10 lg:mb-0">
+            <h1 class="text-[clamp(2rem,5vw,3.5rem)] font-bold leading-tight text-dark mb-4">
+              连接优质音乐教师<br/>
+              <span class="text-primary">与未来音乐家</span>
+            </h1>
+            <p class="text-gray-600 text-lg md:text-xl mb-8 max-w-xl">
+              智能匹配、教学赋能与信用背书于一体的音乐教育中介服务平台，让好老师找到好学生，让好学生遇见好老师。
+            </p>
+            <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+              <a href="#" class="px-8 py-3 bg-primary text-white rounded-lg font-semibold text-lg hover:bg-primary/90 transition-all shadow-medium hover:shadow-hard text-center">
+                寻找音乐老师
+              </a>
+              <a href="#" class="px-8 py-3 bg-white text-primary border border-primary rounded-lg font-semibold text-lg hover:bg-gray-50 transition-all shadow-soft text-center">
+                教师入驻平台
+              </a>
+            </div>
+            
+            <!-- 信任标识 -->
+            <div class="mt-12">
+              <p class="text-gray-500 text-sm mb-4">已获得众多机构与用户的信任</p>
+              <div class="flex flex-wrap items-center gap-6 opacity-70">
+                <img src="https://picsum.photos/id/1/100/40" alt="合作伙伴" class="h-6 md:h-8 object-contain">
+                <img src="https://picsum.photos/id/2/100/40" alt="合作伙伴" class="h-6 md:h-8 object-contain">
+                <img src="https://picsum.photos/id/3/100/40" alt="合作伙伴" class="h-6 md:h-8 object-contain">
+                <img src="https://picsum.photos/id/4/100/40" alt="合作伙伴" class="h-6 md:h-8 object-contain">
+              </div>
+            </div>
+          </div>
+          
+          <div class="w-full lg:w-1/2 relative">
+            <div class="relative z-10 rounded-2xl overflow-hidden shadow-hard">
+              <img src="https://images.unsplash.com/photo-1511379938547-c1f69419868d?q=80&w=2070&auto=format&fit=crop" alt="音乐教学场景" class="w-full h-auto rounded-2xl">
+              <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent flex items-end">
+                <div class="p-6 text-white">
+                  <span class="inline-block px-3 py-1 bg-secondary/90 rounded-full text-sm font-medium mb-3">智能匹配</span>
+                  <h3 class="text-xl font-bold mb-1">找到最适合你的音乐老师</h3>
+                  <p class="text-white/80">音乐学习，让艺术触手可及</p>
+                </div>
+              </div>
+            </div>
+            
+            <!-- 装饰元素 -->
+            <div class="absolute -top-6 -right-6 w-32 h-32 bg-primary/10 rounded-full blur-3xl"></div>
+            <div class="absolute -bottom-8 -left-8 w-40 h-40 bg-secondary/10 rounded-full blur-3xl"></div>
+            
+            <!-- 数据卡片
+            <div class="absolute -bottom-10 left-10 bg-white rounded-xl shadow-medium p-4 w-64">
+              <div class="flex items-center space-x-3">
+                <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                  <i class="fa fa-users text-primary text-xl"></i>
+                </div>
+                <div>
+                  <p class="text-gray-500 text-sm">平台注册用户</p>
+                  <p class="text-2xl font-bold text-dark">10,000+</p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="absolute -top-10 right-10 bg-white rounded-xl shadow-medium p-4 w-64">
+              <div class="flex items-center space-x-3">
+                <div class="w-12 h-12 rounded-full bg-secondary/10 flex items-center justify-center">
+                  <i class="fa fa-graduation-cap text-secondary text-xl"></i>
+                </div>
+                <div>
+                  <p class="text-gray-500 text-sm">认证音乐教师</p>
+                  <p class="text-2xl font-bold text-dark">2,500+</p>
+                </div>
+              </div>
+            </div> -->
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- 核心功能模块 -->
+    <section id="features" class="py-16 md:py-24 bg-white">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+          <span class="inline-block px-4 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium mb-4">核心功能</span>
+          <h2 class="text-[clamp(1.8rem,4vw,2.5rem)] font-bold text-dark mb-4">五大模块，构建完整音乐教育生态</h2>
+          <p class="text-gray-600 max-w-2xl mx-auto text-lg">围绕师生双边体验进行核心功能架构，打造智能匹配、教学赋能与信用背书于一体的中介服务平台</p>
+        </div>
+        
+        <!-- 功能卡片网格 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <!-- 教师端 -->
+          <div class="bg-white rounded-xl shadow-soft p-6 card-hover border border-gray-100">
+            <div class="w-14 h-14 rounded-lg bg-primary/10 flex items-center justify-center mb-6">
+              <i class="fa fa-user-circle-o"></i>
+            </div>
+            <h3 class="text-xl font-bold text-dark mb-3">教师端：专业化数字档案库</h3>
+            <p class="text-gray-600 mb-4">为教师打造个人品牌阵地，建立公开、透明、多维度的数字化档案库，展示教学特色与信用资产。</p>
+            <ul class="space-y-2 mb-6">
+              <li class="flex items-start">
+                <i class="fa fa-check text-primary mt-1 mr-2"></i>
+                <span class="text-gray-600">独立展示主页与资质证明</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fa fa-check text-primary mt-1 mr-2"></i>
+                <span class="text-gray-600">动态标签体系凸显教学特色</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fa fa-check text-primary mt-1 mr-2"></i>
+                <span class="text-gray-600">学员案例与口碑评价体系</span>
+              </li>
+            </ul>
+            <a href="#" class="inline-flex items-center text-primary font-medium hover:text-primary/80">
+              了解更多 <i class="fa fa-arrow-right ml-2"></i>
+            </a>
+            
+            <!-- 配图预览 -->
+            <div class="mt-6 rounded-lg overflow-hidden border border-gray-200">
+              <img src="https://picsum.photos/id/24/600/300" alt="教师用户主页" class="w-full h-48 object-cover">
+            </div>
+          </div>
+          
+          <!-- 学生端 -->
+          <div class="bg-white rounded-xl shadow-soft p-6 card-hover border border-gray-100">
+            <div class="w-14 h-14 rounded-lg bg-secondary/10 flex items-center justify-center mb-6">
+              <i class="fa fa-search text-secondary text-2xl"></i>
+            </div>
+            <h3 class="text-xl font-bold text-dark mb-3">学生端：精准化需求匹配</h3>
+            <p class="text-gray-600 mb-4">智能推荐与自由筛选双重路径，解决"良师难寻"痛点，实现"我的老师我做主"。</p>
+            <ul class="space-y-2 mb-6">
+              <li class="flex items-start">
+                <i class="fa fa-check text-secondary mt-1 mr-2"></i>
+                <span class="text-gray-600">定制化问卷构建学习画像</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fa fa-check text-secondary mt-1 mr-2"></i>
+                <span class="text-gray-600">AI算法自动推送契合教师</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fa fa-check text-secondary mt-1 mr-2"></i>
+                <span class="text-gray-600">多维度自主筛选与搜索</span>
+              </li>
+            </ul>
+            <a href="#" class="inline-flex items-center text-secondary font-medium hover:text-secondary/80">
+              了解更多 <i class="fa fa-arrow-right ml-2"></i>
+            </a>
+            
+            <!-- 配图预览 -->
+            <div class="mt-6 rounded-lg overflow-hidden border border-gray-200">
+              <img src="https://picsum.photos/id/48/600/300" alt="学生搜索页面" class="w-full h-48 object-cover">
+            </div>
+          </div>
+          
+          <!-- 交易端 -->
+          <div class="bg-white rounded-xl shadow-soft p-6 card-hover border border-gray-100">
+            <div class="w-14 h-14 rounded-lg bg-green-100 flex items-center justify-center mb-6">
+              <i class="fa fa-video-camera text-green-600 text-2xl"></i>
+            </div>
+            <h3 class="text-xl font-bold text-dark mb-3">交易端：一体化沉浸式线上教学空间</h3>
+            <p class="text-gray-600 mb-4">内置无缝衔接的线上直播课堂，全程云端录制归档，保障教学体验与师生双方权益。</p>
+            <ul class="space-y-2 mb-6">
+              <li class="flex items-start">
+                <i class="fa fa-check text-green-600 mt-1 mr-2"></i>
+                <span class="text-gray-600">高清音视频与实时互动白板</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fa fa-check text-green-600 mt-1 mr-2"></i>
+                <span class="text-gray-600">全程云端录制自动归档</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fa fa-check text-green-600 mt-1 mr-2"></i>
+                <span class="text-gray-600">课后回放复习与教学存证</span>
+              </li>
+            </ul>
+            <a href="#" class="inline-flex items-center text-green-600 font-medium hover:text-green-700">
+              了解更多 <i class="fa fa-arrow-right ml-2"></i>
+            </a>
+            
+            <!-- 配图预览 -->
+            <div class="mt-6 rounded-lg overflow-hidden border border-gray-200">
+              <img src="https://picsum.photos/id/60/600/300" alt="线上课堂截图" class="w-full h-48 object-cover">
+            </div>
+          </div>
+          
+          <!-- 赋能端 -->
+          <div class="bg-white rounded-xl shadow-soft p-6 card-hover border border-gray-100">
+            <div class="w-14 h-14 rounded-lg bg-purple-100 flex items-center justify-center mb-6">
+               <i class="fa fa-cogs"></i>
+            </div>
+            <h3 class="text-xl font-bold text-dark mb-3">赋能端：智能化课后练习</h3>
+            <p class="text-gray-600 mb-4">AI智能陪练系统提供实时评估，建立教师评价红榜与流量激励机制，形成正向循环。</p>
+            <ul class="space-y-2 mb-6">
+              <li class="flex items-start">
+                <i class="fa fa-check text-purple-600 mt-1 mr-2"></i>
+                <span class="text-gray-600">音准、节奏实时评估反馈</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fa fa-check text-purple-600 mt-1 mr-2"></i>
+                <span class="text-gray-600">趣味化练习与学习激励</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fa fa-check text-purple-600 mt-1 mr-2"></i>
+                <span class="text-gray-600">教师评价红榜与流量倾斜</span>
+              </li>
+            </ul>
+            <a href="#" class="inline-flex items-center text-purple-600 font-medium hover:text-purple-700">
+              了解更多 <i class="fa fa-arrow-right ml-2"></i>
+            </a>
+            
+            <!-- 配图预览 -->
+            <div class="mt-6 rounded-lg overflow-hidden border border-gray-200">
+              <img src="https://picsum.photos/id/72/600/300" alt="AI陪练页面" class="w-full h-48 object-cover">
+            </div>
+          </div>
+          
+          <!-- 服务端 -->
+          <div class="bg-white rounded-xl shadow-soft p-6 card-hover border border-gray-100">
+            <div class="w-14 h-14 rounded-lg bg-blue-100 flex items-center justify-center mb-6">
+              <i class="fa fa-question-circle text-blue-600 text-2xl"></i>
+            </div>
+            <h3 class="text-xl font-bold text-dark mb-3">服务端：碎片化知识付费</h3>
+            <p class="text-gray-600 mb-4">付费问答社区满足即时性疑问，形成知识碎片化变现，为师生匹配提供轻量前置体验。</p>
+            <ul class="space-y-2 mb-6">
+              <li class="flex items-start">
+                <i class="fa fa-check text-blue-600 mt-1 mr-2"></i>
+                <span class="text-gray-600">定向付费咨询特定问题</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fa fa-check text-blue-600 mt-1 mr-2"></i>
+                <span class="text-gray-600">演奏技巧与乐理难点解答</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fa fa-check text-blue-600 mt-1 mr-2"></i>
+                <span class="text-gray-600">知识付费+内容电商多元变现渠道</span>
+              </li>
+            </ul>
+            <a href="#" class="inline-flex items-center text-blue-600 font-medium hover:text-blue-700">
+              了解更多 <i class="fa fa-arrow-right ml-2"></i>
+            </a>
+            
+            <!-- 配图预览 -->
+            <div class="mt-6 rounded-lg overflow-hidden border border-gray-200">
+              <img src="https://picsum.photos/id/84/600/300" alt="付费问答页面" class="w-full h-48 object-cover">
+            </div>
+          </div>
+          
+          <!-- 小程序 -->
+          <div id="app" class="bg-white rounded-xl shadow-soft p-6 card-hover border border-gray-100">
+            <div class="w-14 h-14 rounded-lg bg-orange-100 flex items-center justify-center mb-6">
+              <i class="fa fa-mobile text-orange-600 text-3xl"></i>
+            </div>
+            <h3 class="text-xl font-bold text-dark mb-3">小程序：碎片化场景覆盖</h3>
+            <p class="text-gray-600 mb-4">覆盖课前课后碎片化场景，随时随地处理约课、沟通、回看课程等高频需求，提升便捷性。</p>
+            <ul class="space-y-2 mb-6">
+              <li class="flex items-start">
+                <i class="fa fa-check text-orange-600 mt-1 mr-2"></i>
+                <span class="text-gray-600">通勤路上确认课表</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fa fa-check text-orange-600 mt-1 mr-2"></i>
+                <span class="text-gray-600">琴房练琴查看作业反馈</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fa fa-check text-orange-600 mt-1 mr-2"></i>
+                <span class="text-gray-600">便捷约课与支付功能</span>
+              </li>
+            </ul>
+            <a href="#" class="inline-flex items-center text-orange-600 font-medium hover:text-orange-700">
+              了解更多 <i class="fa fa-arrow-right ml-2"></i>
+            </a>
+            
+            <!-- 配图预览 -->
+            <div class="mt-6 rounded-lg overflow-hidden border border-gray-200">
+              <img src="https://picsum.photos/id/96/600/300" alt="小程序界面" class="w-full h-48 object-cover">
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- 教师端详情 -->
+    <section id="teacher" class="py-16 md:py-24 bg-gray-50">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col lg:flex-row items-center gap-12">
+          <div class="w-full lg:w-1/2">
+            <span class="inline-block px-4 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium mb-4">教师端</span>
+            <h2 class="text-[clamp(1.8rem,4vw,2.5rem)] font-bold text-dark mb-6">打造个人品牌，展示教学价值</h2>
+            <p class="text-gray-600 text-lg mb-8">每位教师均拥有独立的展示主页，呈现基础介绍与资质证明，通过动态标签体系立体化凸显教学特色，将教学价值转化为可视化的信用资产。</p>
+            
+            <!-- 核心优势 -->
+            <div class="space-y-6 mb-8">
+              <div class="flex items-start">
+                <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-1">
+                  <i class="fa fa-id-card text-primary"></i>
+                </div>
+                <div class="ml-4">
+                  <h3 class="text-xl font-semibold text-dark mb-1">专业化数字档案</h3>
+                  <p class="text-gray-600">展示个人简介、教育背景、教学经验、资质证书等全方位信息</p>
+                </div>
+              </div>
+              
+              <div class="flex items-start">
+                <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-1">
+                  <i class="fa fa-tags text-primary"></i>
+                </div>
+                <div class="ml-4">
+                  <h3 class="text-xl font-semibold text-dark mb-1">动态标签体系</h3>
+                  <p class="text-gray-600">"授课学段"、"教学风格"、"名校毕业"等标签，精准匹配学生需求</p>
+                </div>
+              </div>
+              
+              <div class="flex items-start">
+                <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-1">
+                  <i class="fa fa-line-chart text-primary"></i>
+                </div>
+                <div class="ml-4">
+                  <h3 class="text-xl font-semibold text-dark mb-1">教学成果可视化</h3>
+                  <p class="text-gray-600">展示课程定价、学员成功案例、考级通过率等具体数据</p>
+                </div>
+              </div>
+              
+              <div class="flex items-start">
+                <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-1">
+                  <i class="fa fa-star text-primary"></i>
+                </div>
+                <div class="ml-4">
+                  <h3 class="text-xl font-semibold text-dark mb-1">真实口碑评价</h3>
+                  <p class="text-gray-600">来自真实学生的评价体系，建立教学信用背书</p>
+                </div>
+              </div>
+            </div>
+            
+            <a href="#" class="inline-block px-8 py-3 bg-primary text-white rounded-lg font-semibold hover:bg-primary/90 transition-all shadow-medium hover:shadow-hard">
+              立即入驻成为教师
+            </a>
+          </div>
+          
+          <div class="w-full lg:w-1/2">
+            <div class="relative">
+              <!-- 主图 -->
+              <div class="rounded-2xl overflow-hidden shadow-hard border border-gray-200">
+                <img src="https://picsum.photos/id/24/800/600" alt="教师主页展示" class="w-full h-auto">
+              </div>
+              
+              <!-- 装饰元素 -->
+              <div class="absolute -top-6 -right-6 w-32 h-32 bg-primary/10 rounded-full blur-3xl"></div>
+              <div class="absolute -bottom-8 -left-8 w-40 h-40 bg-secondary/10 rounded-full blur-3xl"></div>
+              
+              <!-- 小卡片 -->
+              <div class="absolute -bottom-10 right-10 bg-white rounded-xl shadow-medium p-4 w-64">
+                <div class="flex items-center space-x-3">
+                  <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
+                    <i class="fa fa-thumbs-up text-green-600 text-xl"></i>
+                  </div>
+                  <div>
+                    <p class="text-gray-500 text-sm">教师满意度</p>
+                    <p class="text-2xl font-bold text-dark">98%+</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="absolute -top-10 left-10 bg-white rounded-xl shadow-medium p-4 w-64">
+                <div class="flex items-center space-x-3">
+                  <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
+                    <i class="fa fa-users text-blue-600 text-xl"></i>
+                  </div>
+                  <div>
+                    <p class="text-gray-500 text-sm">平均学员数</p>
+                    <p class="text-2xl font-bold text-dark">45人/年</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- 学生端详情 -->
+<section id="student" class="py-16 md:py-24 bg-white">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-col lg:flex-row-reverse items-center gap-12">
+      <div class="w-full lg:w-1/2">
+        <span class="inline-block px-4 py-1 bg-secondary/10 text-secondary rounded-full text-sm font-medium mb-4">学生端</span>
+        <h2 class="text-[clamp(1.8rem,4vw,2.5rem)] font-bold text-dark mb-6">精准匹配，找到最适合你的音乐老师</h2>
+        <p class="text-gray-600 text-lg mb-8">智能推荐与自由筛选双重路径，解决"良师难寻"痛点，让每个学生都能找到最适合自己的音乐导师。</p>
+        
+        <!-- 核心优势 -->
+        <div class="space-y-6 mb-8">
+          <div class="flex items-start">
+            <div class="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center flex-shrink-0 mt-1">
+              <i class="fa fa-user-circle text-secondary"></i>
+            </div>
+            <div class="ml-4">
+              <h3 class="text-xl font-semibold text-dark mb-1">定制化学习画像</h3>
+              <p class="text-gray-600">通过注册问卷，精准记录学习目标、基础水平、风格偏好等信息</p>
+            </div>
+          </div>
+          
+          <div class="flex items-start">
+            <div class="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center flex-shrink-0 mt-1">
+              <i class="fa fa-robot text-secondary"></i>
+            </div>
+            <div class="ml-4">
+              <h3 class="text-xl font-semibold text-dark mb-1">AI智能推荐</h3>
+              <p class="text-gray-600">算法模型自动推送高度契合的教师名单，节省筛选时间</p>
+            </div>
+          </div>
+          
+          <div class="flex items-start">
+            <div class="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center flex-shrink-0 mt-1">
+              <i class="fa fa-filter text-secondary"></i>
+            </div>
+            <div class="ml-4">
+              <h3 class="text-xl font-semibold text-dark mb-1">多维度筛选</h3>
+              <p class="text-gray-600">教学领域、价格区间、教师背景、用户评分等多维度自主筛选</p>
+            </div>
+          </div>
+          
+          <div class="flex items-start">
+            <div class="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center flex-shrink-0 mt-1">
+              <i class="fa fa-shield text-secondary"></i>
+            </div>
+            <div class="ml-4">
+              <h3 class="text-xl font-semibold text-dark mb-1">安全保障</h3>
+              <p class="text-gray-600">平台担保交易，课程强录制+区块链存证，未上课可全额退款，全方位保障学习权益</p>
+            </div>
+          </div>
+        </div>
+        
+        <a href="#" class="inline-block px-8 py-3 bg-secondary text-white rounded-lg font-semibold hover:bg-secondary/90 transition-all shadow-medium hover:shadow-hard">
+          立即注册寻找老师
+        </a>
+      </div>
+      
+      <div class="w-full lg:w-1/2">
+        <div class="relative">
+          <!-- 主图 -->
+          <div class="rounded-2xl overflow-hidden shadow-hard border border-gray-200">
+            <img src="https://picsum.photos/id/48/800/600" alt="学生搜索页面" class="w-full h-auto">
+          </div>
+          
+          <!-- 装饰元素 -->
+          <div class="absolute -top-6 -left-6 w-32 h-32 bg-secondary/10 rounded-full blur-3xl"></div>
+          <div class="absolute -bottom-8 -right-8 w-40 h-40 bg-primary/10 rounded-full blur-3xl"></div>
+          
+          <!-- 小卡片 -->
+          <div class="absolute -bottom-10 left-10 bg-white rounded-xl shadow-medium p-4 w-64">
+            <div class="flex items-center space-x-3">
+              <div class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center">
+                <i class="fa fa-clock-o text-purple-600 text-xl"></i>
+              </div>
+              <div>
+                <p class="text-gray-500 text-sm">平均匹配时间</p>
+                <p class="text-2xl font-bold text-dark">3分钟</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="absolute -top-10 right-10 bg-white rounded-xl shadow-medium p-4 w-64">
+            <div class="flex items-center space-x-3">
+              <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
+                <i class="fa fa-smile-o text-green-600 text-xl"></i>
+              </div>
+              <div>
+                <p class="text-gray-500 text-sm">学生满意度</p>
+                <p class="text-2xl font-bold text-dark">96.8%</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+    
+    <!-- 线上商城 -->
+    <section id="mall" class="py-16 md:py-24 bg-gray-50">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+          <span class="inline-block px-4 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium mb-4">线上商城</span>
+          <h2 class="text-[clamp(1.8rem,4vw,2.5rem)] font-bold text-dark mb-4">构建音乐教育生态，延伸服务价值</h2>
+          <p class="text-gray-600 max-w-2xl mx-auto text-lg">集成综合性线上商城，作为核心教学服务的有机补充与价值延伸，满足用户全学习周期需求</p>
+        </div>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          <!-- 虚拟产品 -->
+          <div class="bg-white rounded-2xl shadow-soft p-8 border border-gray-100">
+            <div class="flex items-center mb-6">
+              <div class="w-14 h-14 rounded-lg bg-blue-100 flex items-center justify-center mr-4">
+                <i class="fa fa-play-circle text-blue-600 text-2xl"></i>
+              </div>
+              <h3 class="text-2xl font-bold text-dark">精品录播课专区</h3>
+            </div>
+            
+            <p class="text-gray-600 mb-8 text-lg">允许认证教师将系统性教学内容制作成标准化课程进行上架销售，满足学生碎片化、低成本的学习需求。</p>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
+              <div class="bg-gray-50 rounded-xl p-4">
+                <h4 class="font-semibold text-dark mb-2">对学生</h4>
+                <ul class="space-y-2">
+                  <li class="flex items-start">
+                    <i class="fa fa-check text-blue-600 mt-1 mr-2"></i>
+                    <span class="text-gray-600">碎片化时间学习</span>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fa fa-check text-blue-600 mt-1 mr-2"></i>
+                    <span class="text-gray-600">低成本入门体验</span>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fa fa-check text-blue-600 mt-1 mr-2"></i>
+                    <span class="text-gray-600">反复观看复习</span>
+                  </li>
+                </ul>
+              </div>
+              
+              <div class="bg-gray-50 rounded-xl p-4">
+                <h4 class="font-semibold text-dark mb-2">对教师</h4>
+                <ul class="space-y-2">
+                  <li class="flex items-start">
+                    <i class="fa fa-check text-blue-600 mt-1 mr-2"></i>
+                    <span class="text-gray-600">知识成果二次变现</span>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fa fa-check text-blue-600 mt-1 mr-2"></i>
+                    <span class="text-gray-600">扩大教学影响力</span>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fa fa-check text-blue-600 mt-1 mr-2"></i>
+                    <span class="text-gray-600">吸引潜在一对一学员</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            
+            <div class="rounded-xl overflow-hidden border border-gray-200">
+              <img src="https://picsum.photos/id/36/800/400" alt="精品录播课" class="w-full h-auto">
+            </div>
+          </div>
+          
+          <!-- 实体产品 -->
+          <div class="bg-white rounded-2xl shadow-soft p-8 border border-gray-100">
+            <div class="flex items-center mb-6">
+              <div class="w-14 h-14 rounded-lg bg-orange-100 flex items-center justify-center mr-4">
+                <i class="fa fa-shopping-bag text-orange-600 text-2xl"></i>
+              </div>
+              <h3 class="text-2xl font-bold text-dark">音乐学习周边</h3>
+            </div>
+            
+            <p class="text-gray-600 mb-8 text-lg">平台自营的系列音乐主题文创及学习必需品，解决学生实际需求，增强用户认同感与社群归属感。</p>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
+              <div class="bg-gray-50 rounded-xl p-4">
+                <h4 class="font-semibold text-dark mb-2">核心产品</h4>
+                <ul class="space-y-2">
+                  <li class="flex items-start">
+                    <i class="fa fa-music text-orange-600 mt-1 mr-2"></i>
+                    <span class="text-gray-600">五线谱本与音乐文具</span>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fa fa-music text-orange-600 mt-1 mr-2"></i>
+                    <span class="text-gray-600">定制谱架与节拍器</span>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fa fa-music text-orange-600 mt-1 mr-2"></i>
+                    <span class="text-gray-600">乐器保养工具套装</span>
+                  </li>
+                </ul>
+              </div>
+              
+              <div class="bg-gray-50 rounded-xl p-4">
+                <h4 class="font-semibold text-dark mb-2">产品优势</h4>
+                <ul class="space-y-2">
+                  <li class="flex items-start">
+                    <i class="fa fa-check text-orange-600 mt-1 mr-2"></i>
+                    <span class="text-gray-600">精选设计，品质保障</span>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fa fa-check text-orange-600 mt-1 mr-2"></i>
+                    <span class="text-gray-600">平台品牌赋能，专属标识</span>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fa fa-check text-orange-600 mt-1 mr-2"></i>
+                    <span class="text-gray-600">教学场景深度适配</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            
+            <div class="rounded-xl overflow-hidden border border-gray-200">
+              <img src="https://picsum.photos/id/42/800/400" alt="音乐学习周边" class="w-full h-auto">
+            </div>
+          </div>
+        </div>
+        
+        <div class="text-center mt-12">
+          <a href="#" class="inline-block px-8 py-3 bg-primary text-white rounded-lg font-semibold hover:bg-primary/90 transition-all shadow-medium hover:shadow-hard">
+            访问线上商城
+          </a>
+        </div>
+      </div>
+    </section>
+    
+    <!-- 数据统计 -->
+    <section class="py-16 md:py-20 bg-gradient-primary text-white">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+          <div class="p-4">
+            <div class="text-4xl md:text-5xl font-bold mb-2" id="counter1">0</div>
+            <p class="text-white/80">认证音乐教师</p>
+          </div>
+          <div class="p-4">
+            <div class="text-4xl md:text-5xl font-bold mb-2" id="counter2">0</div>
+            <p class="text-white/80">注册学生用户</p>
+          </div>
+          <div class="p-4">
+            <div class="text-4xl md:text-5xl font-bold mb-2" id="counter3">0</div>
+            <p class="text-white/80">成功匹配师生</p>
+          </div>
+          <div class="p-4">
+            <div class="text-4xl md:text-5xl font-bold mb-2" id="counter4">0</div>
+            <p class="text-white/80">完成教学课时</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- 用户评价 -->
+    <section class="py-16 md:py-24 bg-white">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+          <span class="inline-block px-4 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium mb-4">用户评价</span>
+          <h2 class="text-[clamp(1.8rem,4vw,2.5rem)] font-bold text-dark mb-4">来自师生的真实反馈</h2>
+          <p class="text-gray-600 max-w-2xl mx-auto text-lg">听听已经使用平台的教师和学生们怎么说</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <!-- 评价1 -->
+          <div class="bg-white rounded-xl shadow-soft p-6 border border-gray-100 card-hover">
+            <div class="flex items-center mb-4">
+              <img src="https://picsum.photos/id/64/100/100" alt="用户头像" class="w-12 h-12 rounded-full object-cover mr-4">
+              <div>
+                <h4 class="font-semibold text-dark">李老师</h4>
+                <p class="text-gray-500 text-sm">钢琴教师 · 5年教龄</p>
+              </div>
+            </div>
+            <div class="flex mb-4">
+              <i class="fa fa-star text-yellow-400"></i>
+              <i class="fa fa-star text-yellow-400"></i>
+              <i class="fa fa-star text-yellow-400"></i>
+              <i class="fa fa-star text-yellow-400"></i>
+              <i class="fa fa-star text-yellow-400"></i>
+            </div>
+            <p class="text-gray-600 mb-4">"平台的数字档案库让我的教学成果得到了充分展示，动态标签系统帮助我精准匹配到了很多合适的学生。信用背书机制也让家长们更加信任我，现在我的学生已经排到了3个月后。"</p>
+            <div class="text-primary font-medium">已在平台授课200+课时</div>
+          </div>
+          
+          <!-- 评价2 -->
+          <div class="bg-white rounded-xl shadow-soft p-6 border border-gray-100 card-hover">
+            <div class="flex items-center mb-4">
+              <img src="https://picsum.photos/id/65/100/100" alt="用户头像" class="w-12 h-12 rounded-full object-cover mr-4">
+              <div>
+                <h4 class="font-semibold text-dark">王同学</h4>
+                <p class="text-gray-500 text-sm">吉他学习者 · 初级</p>
+              </div>
+            </div>
+            <div class="flex mb-4">
+              <i class="fa fa-star text-yellow-400"></i>
+              <i class="fa fa-star text-yellow-400"></i>
+              <i class="fa fa-star text-yellow-400"></i>
+              <i class="fa fa-star text-yellow-400"></i>
+              <i class="fa fa-star-half-o text-yellow-400"></i>
+            </div>
+            <p class="text-gray-600 mb-4">"通过平台的智能匹配找到了非常适合我的吉他老师，老师的教学风格和我的学习节奏特别契合。AI陪练功能也很实用，课后练习时能得到实时反馈，进步很快。课程录制回放功能也很方便复习。"</p>
+            <div class="text-secondary font-medium">已在平台学习6个月</div>
+          </div>
+          
+          <!-- 评价3 -->
+          <div class="bg-white rounded-xl shadow-soft p-6 border border-gray-100 card-hover">
+            <div class="flex items-center mb-4">
+              <img src="https://picsum.photos/id/66/100/100" alt="用户头像" class="w-12 h-12 rounded-full object-cover mr-4">
+              <div>
+                <h4 class="font-semibold text-dark">张老师</h4>
+                <p class="text-gray-500 text-sm">小提琴教师 · 10年教龄</p>
+              </div>
+            </div>
+            <div class="flex mb-4">
+              <i class="fa fa-star text-yellow-400"></i>
+              <i class="fa fa-star text-yellow-400"></i>
+              <i class="fa fa-star text-yellow-400"></i>
+              <i class="fa fa-star text-yellow-400"></i>
+              <i class="fa fa-star text-yellow-400"></i>
+            </div>
+            <p class="text-gray-600 mb-4">"作为一名资深教师，我很看重教学的专业性和规范性。平台的线上课堂功能非常完善，高清视频和互动白板让远程教学体验不输线下。录播课功能也让我的教学内容得到了二次变现，增加了额外收入。"</p>
+            <div class="text-primary font-medium">已在平台授课500+课时</div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- 注册引导 -->
+    <section class="py-16 md:py-24 bg-gray-50">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-gradient-to-r from-primary to-blue-700 rounded-3xl shadow-hard overflow-hidden">
+          <div class="flex flex-col lg:flex-row">
+            <div class="w-full lg:w-2/3 p-8 md:p-12 text-white">
+              <h2 class="text-[clamp(1.8rem,4vw,2.5rem)] font-bold mb-6">开启你的音乐教育之旅</h2>
+              <p class="text-white/80 text-lg mb-8 max-w-xl">
+                无论你是寻找优质音乐教师的学生，还是希望拓展教学事业的音乐教师，乐桥都能为你提供全方位的支持与服务。
+              </p>
+              
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
+                <div class="flex items-start">
+                  <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0 mt-1">
+                    <i class="fa fa-check text-white"></i>
+                  </div>
+                  <div class="ml-4">
+                    <h3 class="text-xl font-semibold mb-1">学生注册</h3>
+                    <p class="text-white/70">找到最适合你的音乐老师</p>
+                  </div>
+                </div>
+                
+                <div class="flex items-start">
+                  <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0 mt-1">
+                    <i class="fa fa-check text-white"></i>
+                  </div>
+                  <div class="ml-4">
+                    <h3 class="text-xl font-semibold mb-1">教师入驻</h3>
+                    <p class="text-white/70">打造个人品牌，拓展生源</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+                <a href="#" class="px-8 py-3 bg-white text-primary rounded-lg font-semibold hover:bg-gray-100 transition-all text-center">
+                  学生注册
+                </a>
+                <a href="#" class="px-8 py-3 bg-transparent text-white border border-white rounded-lg font-semibold hover:bg-white/10 transition-all text-center">
+                  教师入驻
+                </a>
+              </div>
+            </div>
+            
+            <div class="w-full lg:w-1/3 relative hidden lg:block">
+              <img src="https://picsum.photos/id/96/600/800" alt="音乐教学" class="absolute inset-0 w-full h-full object-cover">
+              <div class="absolute inset-0 bg-gradient-to-l from-primary/80 to-transparent"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <a href="https://grower2006.github.io/lsc/classinterface.html" 
+   class="fixed right-6 bottom-24 z-40 flex flex-col items-center justify-center 
+          w-18 h-18 md:w-20 md:h-20 bg-primary text-white rounded-full shadow-hard
+          transition-all duration-300 hover:scale-110 hover:shadow-xl">
+  <i class="fa fa-calendar-check-o text-2xl md:text-3xl mb-1"></i>
+  <span class="text-xs md:text-sm font-medium">快速约课</span>
+</a>
+
+  <!-- 页脚 -->
+  <footer class="bg-dark text-white pt-16 pb-8">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+        <!-- 关于我们 -->
+        <div>
+          <div class="flex items-center space-x-2 mb-6">
+  <!-- 删掉原本的音乐图标div，只保留图片和文字 -->
+  <img src="https://grower2006.github.io/lsc/images/m5.png" alt="音乐logo" width="35" height="35">
+  <span class="text-xl font-bold">乐桥</span>
+</div>
+          <p class="text-gray-400 mb-6">
+            连接优质音乐教师与潜在学生的智能枢纽与信任桥梁，打造完整音乐教育生态。
+          </p>
+          <div class="flex space-x-4">
+            <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-primary transition-colors">
+              <i class="fa fa-weixin"></i>
+            </a>
+            <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-primary transition-colors">
+              <i class="fa fa-weibo"></i>
+            </a>
+            <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-primary transition-colors">
+              <i class="fa fa-qq"></i>
+            </a>
+          </div>
+        </div>
+        
+        <!-- 快速链接 -->
+        <div>
+          <h4 class="text-lg font-semibold mb-6">快速链接</h4>
+          <ul class="space-y-3">
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">关于我们</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">教师入驻</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">学生注册</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">线上商城</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">帮助中心</a></li>
+          </ul>
+        </div>
+        
+        <!-- 功能模块 -->
+        <div>
+          <h4 class="text-lg font-semibold mb-6">功能模块</h4>
+          <ul class="space-y-3">
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">教师数字档案</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">智能匹配系统</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">线上直播课堂</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">AI智能陪练</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">付费问答社区</a></li>
+          </ul>
+        </div>
+        
+        <!-- 联系我们 -->
+        <div>
+          <h4 class="text-lg font-semibold mb-6">联系我们</h4>
+          <ul class="space-y-3">
+            <li class="flex items-start">
+              <i class="fa fa-map-marker text-primary mt-1 mr-3"></i>
+              <span class="text-gray-400">北京市朝阳区音乐大厦15层</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fa fa-phone text-primary mt-1 mr-3"></i>
+              <span class="text-gray-400">400-888-9999</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fa fa-envelope text-primary mt-1 mr-3"></i>
+              <span class="text-gray-400">contact@yueqiao.com</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fa fa-clock-o text-primary mt-1 mr-3"></i>
+              <span class="text-gray-400">周一至周日 9:00-21:00</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="border-t border-gray-800 pt-8">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+          <p class="text-gray-500 text-sm mb-4 md:mb-0">
+            &copy; 2024 乐桥音乐教育平台 版权所有 | 京ICP备12345678号
+          </p>
+          <div class="flex space-x-6">
+            <a href="#" class="text-gray-500 hover:text-gray-300 text-sm">隐私政策</a>
+            <a href="#" class="text-gray-500 hover:text-gray-300 text-sm">服务条款</a>
+            <a href="#" class="text-gray-500 hover:text-gray-300 text-sm">法律声明</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+  
+  <!-- 回到顶部按钮 -->
+  <button id="backToTop" class="fixed bottom-8 right-8 w-12 h-12 rounded-full bg-primary text-white shadow-hard flex items-center justify-center opacity-0 invisible transition-all duration-300 hover:bg-primary/90">
+    <i class="fa fa-arrow-up"></i>
+  </button>
+  
+  <!-- JavaScript -->
+  <script>
+    // 移动端菜单切换
+    const menuBtn = document.getElementById('menuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    
+    menuBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+    
+    // 导航栏滚动效果
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 50) {
+        navbar.classList.add('shadow-medium');
+        navbar.classList.remove('shadow-soft');
+      } else {
+        navbar.classList.remove('shadow-medium');
+        navbar.classList.add('shadow-soft');
+      }
+    });
+    
+    // 回到顶部按钮
+    const backToTopBtn = document.getElementById('backToTop');
+    
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 300) {
+        backToTopBtn.classList.remove('opacity-0', 'invisible');
+        backToTopBtn.classList.add('opacity-100', 'visible');
+      } else {
+        backToTopBtn.classList.add('opacity-0', 'invisible');
+        backToTopBtn.classList.remove('opacity-100', 'visible');
+      }
+    });
+    
+    backToTopBtn.addEventListener('click', () => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
+    
+    // 平滑滚动
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        
+        const targetId = this.getAttribute('href');
+        if (targetId === '#') return;
+        
+        const targetElement = document.querySelector(targetId);
+        if (targetElement) {
+          // 关闭移动端菜单
+          mobileMenu.classList.add('hidden');
+          
+          // 滚动到目标位置
+          targetElement.scrollIntoView({
+            behavior: 'smooth'
+          });
+        }
+      });
+    });
+    
+    // 数字计数器动画
+    function animateCounter(element, target, duration = 2000) {
+      const start = 0;
+      const increment = target / (duration / 16);
+      let current = start;
+      
+      const timer = setInterval(() => {
+        current += increment;
+        if (current >= target) {
+          clearInterval(timer);
+          current = target;
+        }
+        element.textContent = Math.ceil(current).toLocaleString();
+      }, 16);
+    }
+    
+    // 监听滚动，当统计区域进入视口时启动计数器
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          animateCounter(document.getElementById('counter1'), 2500);
+          animateCounter(document.getElementById('counter2'), 10000);
+          animateCounter(document.getElementById('counter3'), 8500);
+          animateCounter(document.getElementById('counter4'), 50000);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.5 });
+    
+    observer.observe(document.querySelector('.bg-gradient-primary'));
+  </script>
+</body>
+</html>
