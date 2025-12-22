@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>乐桥 - 课程回放</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+        }
+        .header {
+            background-color: #165DFF;
+            color: white;
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(22, 93, 255, 0.15);
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 24px;
+            font-weight: 700;
+        }
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background-color: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #165DFF;
+        }
+        .nav-menu {
+            display: flex;
+            gap: 24px;
+        }
+        .nav-item {
+            cursor: pointer;
+            padding: 6px 0;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        .nav-item.active {
+            border-bottom: 2px solid white;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #e8f0ff;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #165DFF;
+            font-weight: 600;
+        }
+        .container {
+            max-width: 1440px;
+            margin: 24px auto;
+            padding: 0 24px;
+        }
+        .course-path {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 16px;
+        }
+        .course-path a {
+            color: #165DFF;
+            text-decoration: none;
+        }
+        .course-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 24px;
+        }
+        .course-info {
+            flex: 1;
+        }
+        .course-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #165DFF;
+            margin-bottom: 8px;
+        }
+        .course-meta {
+            display: flex;
+            gap: 24px;
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 16px;
+        }
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .teacher-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .teacher-avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid #e8f0ff;
+        }
+        .teacher-detail {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .teacher-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+        .teacher-tag {
+            font-size: 12px;
+            color: #165DFF;
+            background-color: #e8f0ff;
+            padding: 2px 8px;
+            border-radius: 10px;
+            width: fit-content;
+        }
+        .teacher-desc {
+            font-size: 13px;
+            color: #666;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+        }
+        .action-btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .primary-btn {
+            background-color: #165DFF;
+            color: white;
+        }
+        .primary-btn:hover {
+            background-color: #0F4CD0;
+        }
+        .secondary-btn {
+            background-color: white;
+            color: #165DFF;
+            border: 1px solid #165DFF;
+        }
+        .secondary-btn:hover {
+            background-color: #e8f0ff;
+        }
+        .content-container {
+            display: grid;
+            grid-template-columns: 3fr 1fr;
+            gap: 24px;
+        }
+        .video-area {
+            background-color: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            aspect-ratio: 16/9;
+        }
+        .video-player {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .video-controls {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 16px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.7));
+            color: white;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background-color: rgba(255,255,255,0.3);
+            border-radius: 2px;
+            margin-bottom: 12px;
+            position: relative;
+            cursor: pointer;
+        }
+        .progress-fill {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 35%;
+            background-color: #165DFF;
+            border-radius: 2px;
+        }
+        .progress-dot {
+            position: absolute;
+            left: 35%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 12px;
+            height: 12px;
+            background-color: white;
+            border-radius: 50%;
+            border: 2px solid #165DFF;
+        }
+        .control-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .play-controls {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+        .control-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .control-btn:hover {
+            background-color: rgba(255,255,255,0.3);
+        }
+        .play-btn {
+            background-color: white;
+            color: #165DFF;
+        }
+        .time-display {
+            font-size: 12px;
+            color: rgba(255,255,255,0.8);
+        }
+        .video-setting {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+        .setting-btn {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .side-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .panel-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+        }
+        .panel-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #165DFF;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .panel-icon {
+            width: 24px;
+            height: 24px;
+            background-color: #e8f0ff;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #165DFF;
+        }
+        .chapter-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .chapter-item {
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 3px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .chapter-item.active {
+            background-color: #e8f0ff;
+            border-left: 3px solid #165DFF;
+        }
+        .chapter-item:hover {
+            background-color: #f5f7fa;
+        }
+        .chapter-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .chapter-title {
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .chapter-time {
+            font-size: 12px;
+            color: #666;
+        }
+        .chapter-marker {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #165DFF;
+            display: none;
+        }
+        .chapter-item.active .chapter-marker {
+            display: block;
+        }
+        .resource-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .resource-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
+            border-radius: 8px;
+            transition: background-color 0.3s;
+            cursor: pointer;
+        }
+        .resource-item:hover {
+            background-color: #f5f7fa;
+        }
+        .resource-icon {
+            width: 32px;
+            height: 32px;
+            background-color: #e8f0ff;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #165DFF;
+        }
+        .resource-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .resource-name {
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .resource-size {
+            font-size: 12px;
+            color: #666;
+        }
+        .download-btn {
+            padding: 6px 12px;
+            background-color: #e8f0ff;
+            color: #165DFF;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .download-btn:hover {
+            background-color: #d1e0ff;
+        }
+        .notes-area {
+            margin-top: 24px;
+            background-color: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+        }
+        .notes-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .notes-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #165DFF;
+        }
+        .notes-content {
+            width: 100%;
+            min-height: 150px;
+            border: 1px solid #e8f0ff;
+            border-radius: 8px;
+            padding: 16px;
+            font-size: 14px;
+            line-height: 1.6;
+            resize: vertical;
+        }
+        .notes-footer {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 12px;
+        }
+        .save-btn {
+            padding: 8px 20px;
+            background-color: #165DFF;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .save-btn:hover {
+            background-color: #0F4CD0;
+        }
+    </style>
+</head>
+<body>
+    <!-- 头部导航 -->
+    <div class="header">
+        <div class="logo">
+            <div class="logo-icon">
+                <img src="images/m5.png" alt="音乐logo" width="40" height="40">
+            </div>
+            乐桥
+        </div>
+        <div class="nav-menu">
+            <div class="nav-item">首页</div>
+            <div class="nav-item active">我的课程</div>
+            <div class="nav-item">发现课程</div>
+            <div class="nav-item">教师中心</div>
+            <div class="nav-item">帮助中心</div>
+        </div>
+        <div class="user-info">
+            <div class="user-avatar">学</div>
+        </div>
+    </div>
+
+    <!-- 主体内容 -->
+    <div class="container">
+      <div class="course-info">
+    <h1 class="course-title">钢琴入门：五线谱基础与手指练习</h1>
+    <div class="course-meta">
+        <div class="meta-item">
+            <i style="color: #165DFF;">📅</i>
+            录制时间：2025-11-20
+        </div>
+        <div class="meta-item">
+            <i style="color: #165DFF;">⏱️</i>
+            课程时长：45:20
+        </div>
+        <div class="meta-item">
+            <i style="color: #165DFF;">👥</i>
+            学习人数：128人
+        </div>
+        <div class="meta-item">
+            <i style="color: #165DFF;">⭐</i>
+            评分：4.9/5.0
+        </div>
+        <!-- 新增：音视频技术说明（放在评分下方） -->
+        <div class="meta-item" style="
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: transform 0.2s ease;"
+            onmouseover="this.style.transform='translateX(-2px)';"
+            onmouseout="this.style.transform='translateX(0)';">
+            <i style="color: #165DFF;">🎧</i>
+            48kHz全频带采样·200ms低延迟·录音棚级音质
+        </div>
+    </div>
+
+    <div class="teacher-card">
+        <img src="https://picsum.photos/id/64/100/100" alt="教师头像" class="teacher-avatar">
+        <div class="teacher-detail">
+            <div class="teacher-name">李老师</div>
+            <div class="teacher-tag">钢琴教育硕士 | 10年教学经验</div>
+            <div class="teacher-desc">平台认证名师，擅长儿童钢琴启蒙与成人兴趣教学</div>
+        </div>
+    </div>
+</div>
+
+        <div class="content-container">
+            <!-- 视频回放区域 -->
+            <div class="video-column">
+                <div class="video-area" style="position: relative;">
+     <!-- 仅抖动的多镜头提示 -->
+    <div style="
+        position: absolute; 
+        top: 10px; 
+        right: 10px; 
+        background: #fff; 
+        color: #165DFF; 
+        font-size: 12px; 
+        padding: 3px 8px; 
+        border-radius: 12px; 
+        display: flex; 
+        align-items: center; 
+        gap: 4px; 
+        z-index: 5; 
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1); 
+        border: 1px solid #E0EBFF;
+        cursor: pointer; /* 鼠标手型 */
+        transition: transform 0.2s ease; /* 仅过渡位移 */"
+        onmouseover="this.style.transform='translateX(-2px) rotate(1deg)'; this.style.boxShadow='0 2px 6px rgba(22, 93, 255, 0.2)';"
+        onmouseout="this.style.transform='translateX(0) rotate(0)'; this.style.boxShadow='0 1px 3px rgba(0,0,0,0.1)';">
+        <i style="color: #165DFF;">🎥</i>
+        <span>多镜头切换 · 手型/表情双视角</span>
+    </div>
+                    <img src="images/m6.png" alt="课程回放视频" class="video-player">
+                    <div class="video-controls">
+                        <div class="progress-bar">
+                            <div class="progress-fill"></div>
+                            <div class="progress-dot"></div>
+                        </div>
+                        <div class="control-group">
+                            <div class="play-controls">
+                                <button class="control-btn play-btn"><i>▶️</i></button>
+                                <button class="control-btn"><i>⏪</i></button>
+                                <button class="control-btn"><i>⏩</i></button>
+                                <button class="control-btn"><i>🔊</i></button>
+                                <div class="time-display">15:45 / 45:20</div>
+                            </div>
+                            <div class="video-setting">
+                                <button class="setting-btn">
+                                    <i>⚙️</i> 设置
+                                </button>
+                                <button class="setting-btn">
+                                    <i>📌</i> 标记
+                                </button>
+                                <button class="setting-btn">
+                                    <i>💾</i> 下载
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 适配当前页面宽度的课堂笔记 -->
+<div class="notes-area" style="background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 16px; margin: 10px 0; width: 100%;">
+    <div class="notes-header" style="margin-bottom: 12px;">
+        <h3 class="notes-title" style="font-size: 16px; font-weight: 600; color: #2d3748; margin: 0;">课堂笔记</h3>
+    </div>
+    <div class="notes-content" style="font-size: 14px; line-height: 1.8;">
+        <div style="margin-bottom: 6px;">
+            1. <span style="display: inline-block; background: #e6fffa; color: #0d9488; font-size: 12px; font-weight: 500; padding: 2px 6px; border-radius: 4px; margin-right: 6px;">重点</span>
+            高音谱号的do在第二线
+        </div>
+        <div style="margin-bottom: 6px;">
+            2. <span style="display: inline-block; background: #fff2f2; color: #dc2626; font-size: 12px; font-weight: 500; padding: 2px 6px; border-radius: 4px; margin-right: 6px;">易错</span>
+            左手5指弹低音do，指法安排：5-4-3-2-1（手指发力方式需注意）
+        </div>
+        <div style="margin-bottom: 6px;">
+            3. 手指练习要点：放松手腕，指尖发力
+        </div>
+        <div>
+            4. <span style="display: inline-block; background: #eff6ff; color: #2563eb; font-size: 12px; font-weight: 500; padding: 2px 6px; border-radius: 4px; margin-right: 6px;">必练</span>
+            第8小节节奏型强化练习
+        </div>
+    </div>
+    <div class="notes-footer" style="margin-top: 12px; text-align: right;">
+        <button class="save-btn" style="background: #2563eb; color: #fff; border: none; border-radius: 4px; padding: 6px 12px; font-size: 13px; cursor: pointer;">
+            保存笔记
+        </button>
+    </div>
+</div>
+            </div>
+
+            <!-- 侧边面板 -->
+            <div class="side-panel">
+                <!-- 章节列表 -->
+                <div class="panel-card">
+                    <h3 class="panel-title">
+                        <span class="panel-icon">📑</span>
+                        课程章节
+                    </h3>
+                    <div class="chapter-list">
+                        <div class="chapter-item">
+                            <div class="chapter-info">
+                                <div class="chapter-title">01. 课程导入与学习目标</div>
+                                <div class="chapter-time">00:00 - 03:15</div>
+                            </div>
+                            <div class="chapter-marker"></div>
+                        </div>
+                        <div class="chapter-item active">
+                            <div class="chapter-info">
+                                <div class="chapter-title">02. 五线谱基础认知</div>
+                                <div class="chapter-time">03:16 - 18:40</div>
+                            </div>
+                            <div class="chapter-marker"></div>
+                        </div>
+                        <div class="chapter-item">
+                            <div class="chapter-info">
+                                <div class="chapter-title">03. 手指指法练习</div>
+                                <div class="chapter-time">18:41 - 32:25</div>
+                            </div>
+                            <div class="chapter-marker"></div>
+                        </div>
+                        <div class="chapter-item">
+                            <div class="chapter-info">
+                                <div class="chapter-title">04. 课堂练习与答疑</div>
+                                <div class="chapter-time">32:26 - 42:10</div>
+                            </div>
+                            <div class="chapter-marker"></div>
+                        </div>
+                        <div class="chapter-item">
+                            <div class="chapter-info">
+                                <div class="chapter-title">05. 课后作业与总结</div>
+                                <div class="chapter-time">42:11 - 45:20</div>
+                            </div>
+                            <div class="chapter-marker"></div>
+                        </div>
+                    </div>
+                </div>
+
+               <!-- 课程资料 -->
+<div class="panel-card">
+    <h3 class="panel-title">
+        <span class="panel-icon">📚</span>
+        课程资料
+    </h3>
+    <div class="resource-list">
+        <!-- 新增：智能乐谱同步选项 -->
+        <div class="resource-item" style="background: #f0f9ff; border-left: 3px solid #2563eb; padding: 10px 0;">
+            <div class="resource-icon">🎹</div>
+            <div class="resource-info">
+                <div class="resource-name" style="font-weight: 500; color: #1e40af;">智能乐谱同步</div>
+                <div class="resource-size">支持实时标注·节拍器同步·多设备适配</div>
+            </div>
+            <button class="download-btn" style="background: #2563eb; color: #fff;">启用</button>
+        </div>
+        <!-- 原有资源项 -->
+        <div class="resource-item">
+            <div class="resource-icon">📄</div>
+            <div class="resource-info">
+                <div class="resource-name">五线谱基础教程.pdf</div>
+                <div class="resource-size">2.4MB</div>
+            </div>
+            <button class="download-btn">下载</button>
+        </div>
+        <div class="resource-item">
+            <div class="resource-icon">🎵</div>
+            <div class="resource-info">
+                <div class="resource-name">手指练习示范音频.mp3</div>
+                <div class="resource-size">3.8MB</div>
+            </div>
+            <button class="download-btn">下载</button>
+        </div>
+        <div class="resource-item">
+            <div class="resource-icon">📝</div>
+            <div class="resource-info">
+                <div class="resource-name">课后作业.pdf</div>
+                <div class="resource-size">1.2MB</div>
+            </div>
+            <button class="download-btn">下载</button>
+        </div>
+        <div class="resource-item">
+            <div class="resource-icon">🎞️</div>
+            <div class="resource-info">
+                <div class="resource-name">课程回放视频.mp4</div>
+                <div class="resource-size">256MB</div>
+            </div>
+            <button class="download-btn">下载</button>
+        </div>
+    </div>
+</div>
+
+                <!-- 学习提示 -->
+                <div class="panel-card">
+                    <h3 class="panel-title">
+                        <span class="panel-icon">💡</span>
+                        学习提示
+                    </h3>
+                    <div style="font-size: 14px; line-height: 1.8; color: #666;">
+                        <p>• 建议先预习五线谱基础知识再观看回放</p>
+                        <p>• 重点关注手指练习部分的示范动作</p>
+                        <p>• 课后完成手指练习作业，下次课将进行点评</p>
+                        <p>• 如有疑问可在笔记区记录或私信老师</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
